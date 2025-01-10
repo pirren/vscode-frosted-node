@@ -41,14 +41,13 @@ jobs:
         run: echo "::set-output name=version::$(jq -r .version package.json)"
 
       # Create a release and upload the package
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Create or Update Release
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: latest
-          release_name: 'VS Code Theme Release (latest)'
-          draft: false
+          name: 'VS Code Theme Release (latest)'
           prerelease: false
+          body: 'Automated release of the latest VS Code theme version.'
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 

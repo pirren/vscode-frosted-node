@@ -1,0 +1,62 @@
+name: Package and Release VS Code Theme
+
+# Define the workflow to run manually
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      # Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+        node-version: ${{ matrix.node-version }}
+
+      # Install vsce
+      - name: Install vsce
+        run: npm install -g vsce
+
+      # Install dependencies if needed (for packaging)
+      - name: Install dependencies
+        run: npm install
+
+      # Package the VS Code extension
+      - name: Package extension
+        run: vsce package
+
+      # Extract version from package.json for naming the VSIX file
+      - name: Get version
+        id: version
+        run: echo "::set-output name=version::$(jq -r .version package.json)"
+
+      # Create a release and upload the package
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: latest
+          release_name: 'VS Code Theme Release (latest)'
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      # Upload the VSIX package to the release
+      - name: Upload VSIX
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: "*.vsix"
+          asset_name: "vscode-theme-${{ steps.version.outputs.version }}.vsix"
+          asset_content_type: application/octet-stream

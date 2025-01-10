@@ -28,7 +28,7 @@ jobs:
 
       # Step 5: Upload .vsix file to GitHub Releases
       - name: Upload .vsix to GitHub Releases
-        uses: gh actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3
         with:
           name: extension-package
           path: '*.vsix'

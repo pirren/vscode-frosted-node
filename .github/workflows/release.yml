@@ -38,7 +38,7 @@ jobs:
         with:
           artifacts: '*.vsix'
           tag: 'v${{ github.run_number }}'
-          name: 'Extension Release'
+          name: 'Latest'
           token: ${{ secrets.GH_TOKEN }} 
           generateReleaseNotes: false
           makeLatest: true

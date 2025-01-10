@@ -1,61 +1,41 @@
-name: Package and Release VS Code Theme
+name: Package and Release Extension
 
-# Define the workflow to run manually
 on:
   workflow_dispatch:
 
 jobs:
   release:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [20.x]
-
+    
     steps:
-      # Check out the repository
-      - name: Checkout code
+      # Step 1: Checkout the repository
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Set up Node.js environment
+      # Step 2: Set up Node.js (required for `vsce` package)
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '16'  # Use the appropriate Node.js version
 
-      # Install vsce
+      # Step 3: Install vsce
       - name: Install vsce
         run: npm install -g vsce
 
-      # Install dependencies if needed (for packaging)
-      - name: Install dependencies
-        run: npm install
-
-      # Package the VS Code extension
+      # Step 4: Package the extension with vsce
       - name: Package extension
-        run: vsce package --out vscode-theme.vsix
+        run: vsce package
 
-      # Extract version from package.json for naming the VSIX file
-      - name: Get version
-        id: version
-        run: echo "::set-output name=version::$(jq -r .version package.json)"
-
-      # Create a release and upload the package
-      - name: Create or Update Release
-        uses: softprops/action-gh-release@v1
+      # Step 5: Upload .vsix file to GitHub Releases
+      - name: Upload .vsix to GitHub Releases
+        uses: gh actions/upload-artifact@v3
         with:
-          tag_name: latest
-          name: 'VS Code Theme Release (latest)'
-          prerelease: false
-          body: 'Automated release of the latest VS Code theme version.'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          name: extension-package
+          path: '*.vsix'
 
-      # Upload the VSIX package to the release
-      - name: Upload VSIX
-        uses: actions/upload-release-asset@v1
+      - name: Create a release and upload .vsix file
+        uses: ncipollo/release-action@v1
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: "vscode-theme.vsix"
-          asset_name: "vscode-theme-${{ steps.version.outputs.version }}.vsix"
-          asset_content_type: application/octet-stream
+          artifacts: '*.vsix'
+          tag: 'v${{ github.run_number }}'
+          name: 'Extension Release'

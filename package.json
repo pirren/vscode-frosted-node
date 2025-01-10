@@ -1,0 +1,30 @@
+{
+    "name":"frosted-node-theme",
+    "displayName":"Frosted Node Theme",
+    "description":"Frosted Node Theme for Visual Studio Code. Inspired by Node.js",
+    "version":"1.0.0",
+    "publisher": "Pierre Nygård",
+    "icon":"images/icon.png",
+    "readme": "./README.md",
+    "engines":{
+       "vscode":"^1.70.0"
+    },
+    "categories":[
+       "Themes"
+    ],
+    "contributes":{
+       "themes":[
+          {
+             "label":"Frosted Node Basic",
+             "uiTheme":"vs-dark",
+             "path":"./themes/frosted-node-basic.json"
+          }
+       ]
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/pirren/vscode-frosted-node.git"
+    },
+	"license":"MIT",
+	"author":"Pierre Nygård <pierre.nygard@gmail.com> (https://github.com/pirren)"
+ }

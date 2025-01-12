@@ -902,7 +902,7 @@
 		{
 			"scope": "entity.name.tag",
 			"settings": {
-				"foreground": "#d8dee9"
+				"foreground": "#81a1c1"
 			}
 		},
 		{
